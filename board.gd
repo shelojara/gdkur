@@ -46,6 +46,7 @@ class Set:
 
 
 func _ready():
+	set_process_input(true)
 	_read_file()
 
 	height = _left.size()
@@ -72,6 +73,34 @@ func _ready():
 			update(x, y)
 	
 	_camera.set_pos(_board_size / 2 - offset)
+
+
+func _input(event):
+	if event.type == InputEvent.MOUSE_BUTTON:
+		if event.is_pressed():
+			var pos = event.pos - _camera.get_camera_pos()
+			pos += Vector2(20, 20) # no idea why...
+
+			var tile_pos_x = int(pos.x / _tile_size)
+			var tile_pos_y = int(pos.y / _tile_size)
+
+			if is_pos_valid(tile_pos_x, tile_pos_y):
+				var tile = _matrix[tile_pos_x][tile_pos_y]
+
+				# check if this is correct tile.
+				if tile.get_pos().x > pos.x:
+					# not the correct tile!
+					tile_pos_x -= 1
+
+				# check if this is correct tile.
+				if tile.get_pos().y > pos.y:
+					# not the correct tile!
+					tile_pos_y -= 1
+
+				_matrix[tile_pos_x][tile_pos_y].fill()
+			else:
+				# check if the click was in the last tile.
+				# TODO!!
 
 
 func _build_matrix(width, height):

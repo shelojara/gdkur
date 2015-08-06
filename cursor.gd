@@ -46,6 +46,9 @@ func _move(x, y):
 
 
 func _input(event):
+	if event.type != InputEvent.KEY:
+		return
+
 	# get release and dewait.
 	if event.is_action_released("ui_left"):
 		_dewait()

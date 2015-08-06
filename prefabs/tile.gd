@@ -1,9 +1,10 @@
-
 extends Sprite
+
 
 const STATE_BLANK = 0
 const STATE_FILLED = 1
 const STATE_MARKED = 2
+
 
 var _state = STATE_BLANK
 var _animations = null
