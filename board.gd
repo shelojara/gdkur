@@ -10,7 +10,7 @@ var NUMBER = preload("res://prefabs/label_number.scn")
 var width = 5
 var height = 5
 var sector = 5
-var level = "res://levels/1/0.krk"
+var level = null
 var offset = Vector2(0, 50)
 
 var _camera = null
@@ -49,11 +49,14 @@ class Set:
 
 
 func _ready():
-	set_process_input(true)
+	if level == null:
+		# this should never happend, but in case it does...
+		level = "res://levels/1/0.krk"
+
 	_read_file()
 
 	height = _left.size()
-	
+
 	# the width is the size of the longest list in the _top.
 	width = 0
 
@@ -73,40 +76,10 @@ func _ready():
 	# preprocess the entir matrix.
 	for x in range(width):
 		for y in range(height):
-			update(x, y)
-	
+			update_board(x, y)
+
 	_camera.set_pos(_board_size / 2 - offset)
-
-
-
-
-func _input(event):
-	if event.type == InputEvent.MOUSE_BUTTON:
-		if event.is_pressed():
-			var pos = event.pos - _camera.get_camera_pos()
-			pos += Vector2(20, 20) # no idea why...
-
-			var tile_pos_x = int(pos.x / _tile_size)
-			var tile_pos_y = int(pos.y / _tile_size)
-
-			if is_pos_valid(tile_pos_x, tile_pos_y):
-				var tile = _matrix[tile_pos_x][tile_pos_y]
-
-				# check if this is correct tile.
-				if tile.get_pos().x > pos.x:
-					# not the correct tile!
-					tile_pos_x -= 1
-
-				# check if this is correct tile.
-				if tile.get_pos().y > pos.y:
-					# not the correct tile!
-					tile_pos_y -= 1
-
-				_matrix[tile_pos_x][tile_pos_y].fill()
-			else:
-				# check if the click was in the last tile.
-				# TODO!!
-				pass
+	_camera.make_current()
 
 
 func _build_matrix(width, height):
@@ -221,7 +194,7 @@ func _get_numbers(line):
 	return numbers
 
 
-func update(col, row):
+func update_board(col, row):
 	update_col(col)
 	update_row(row)
 

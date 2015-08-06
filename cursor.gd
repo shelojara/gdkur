@@ -79,10 +79,10 @@ func _input(event):
 	# mark and fill.
 	elif event.is_action_pressed("btn_mark"):
 		_board.get_tile(_pos).mark()
-		_board.update(_pos.x, _pos.y)
+		_board.update_board(_pos.x, _pos.y)
 	elif event.is_action_pressed("btn_fill"):
 		_board.get_tile(_pos).fill()
-		_board.update(_pos.x, _pos.y)
+		_board.update_board(_pos.x, _pos.y)
 	elif event.is_action_pressed("btn_count"):
 		if _origin != null:
 			_origin = null
