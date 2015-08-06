@@ -26,6 +26,9 @@ var _top = []
 var _left = []
 
 
+var _font = load("res://numberfont.fnt")
+
+
 class Set:
 	var values = []
 
@@ -75,6 +78,8 @@ func _ready():
 	_camera.set_pos(_board_size / 2 - offset)
 
 
+
+
 func _input(event):
 	if event.type == InputEvent.MOUSE_BUTTON:
 		if event.is_pressed():
@@ -101,6 +106,7 @@ func _input(event):
 			else:
 				# check if the click was in the last tile.
 				# TODO!!
+				pass
 
 
 func _build_matrix(width, height):
@@ -131,7 +137,7 @@ func _build_board():
 
 			var number = NUMBER.instance()
 			number.set_pos(Vector2(pos_x, pos_y))
-			number.set_text(str(value))
+			number.set_value(str(value), _font)
 
 			_matrix_top[x][y] = number
 			add_child(number)
@@ -140,7 +146,7 @@ func _build_board():
 	_matrix_left = _build_matrix(_left[0].size(), _left.size())
 	for y in range(_left.size()):
 		var padding_y = y / sector
-		var pos_y = _tile_size * y + y + padding_y + 5
+		var pos_y = _tile_size * y + y + padding_y + 3
 
 		for x in range(_left[0].size()):
 			var value = _left[y][x]
@@ -151,9 +157,8 @@ func _build_board():
 			var pos_x = (x - _left[0].size()) * 20 - 10
 
 			var number = NUMBER.instance()
-			number.set_align(number.ALIGN_RIGHT)
 			number.set_pos(Vector2(pos_x, pos_y))
-			number.set_text(str(value))
+			number.set_value(str(value), _font)
 
 			_matrix_left[x][y] = number
 			add_child(number)

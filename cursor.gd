@@ -28,6 +28,9 @@ func _process(delta):
 	if _origin != null:
 		_counter.show()
 		var distance = _pos - _origin
+		distance.x = abs(distance.x)
+		distance.y = abs(distance.y)
+
 		if distance.x > distance.y:
 			_counter.set_text(str(distance.x + 1))
 		else:
