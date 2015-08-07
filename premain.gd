@@ -85,6 +85,7 @@ func load_package(path):
 
 func load_next(what, path):
 	if what == 0:
+		_title.set_text(TITLE_LEVEL)
 		load_package(path)
 	elif what == 1:
 		load_level(path)
