@@ -1,20 +1,14 @@
-
 extends Node2D
 
 const LEVELS_DIR = "res://levels/"
-const TITLE_PACKAGE = "Select a package"
-const TITLE_LEVEL = "Select a level"
 
-var BUTTON = preload("res://prefabs/button.scn")
+var BLOCK = preload("res://menu/levelblock.scn")
 var LEVEL = preload("res://main.scn")
 
-var _buttons = null
-var _title = null
+var _blocks = null
 
 func _ready():
-	_buttons = get_node("Buttons")
-	_title = get_node("Title")
-	_title.set_text(TITLE_PACKAGE)
+	_blocks = get_node("Blocks")
 
 	var dir = Directory.new()
 	dir.open(LEVELS_DIR)
@@ -28,42 +22,43 @@ func _ready():
 		file_name = dir.get_next()
 
 	dir.list_dir_end()
-	_place_buttons(LEVELS_DIR, packages, 0)
+	_place_buttons(LEVELS_DIR, packages, "levels")
 
 
-func _place_buttons(path_base, values, callback):
-	var x = 80
+func _place_buttons(path_base, values, load_call):
+	var x = 90
 	var y = 200
 	var padding = 10
 	var i = 0
 	
 	for value in values:
-		var button = BUTTON.instance()
+		var block = BLOCK.instance()
 
 		# place.
-		button.set_pos(Vector2(x, y))
-
-		# set values.
-		button.set_path(path_base + value)
-		button.set_callback(callback)
-		button.get_node("Label").set_text(value.split(".")[0])
+		block.set_pos(Vector2(rand_range(100, 700), -50))
+		block.set_destination(Vector2(x, y))
+		block.set_rot(rand_range(0, 3.14))
+		block.set_path(path_base + value)
+		block.set_load_call(load_call)
+		block.set_enable_time(i * 0.25)
+		block.get_node("Label").set_text(value.split(".")[0])
 
 		# advance position.
 		i += 1
 		if i % 7 != 0:
-			x += 80 + padding
+			x += 90 + padding
 
 		else:
-			x = 80
-			y += 80 + padding
+			x = 90
+			y += 90 + padding
 
-		_buttons.add_child(button)
+		_blocks.add_child(block)
 
 
 func load_package(path):
 	# remove all childs from _buttons.
-	for child in _buttons.get_children():
-		_buttons.remove_child(child)
+	for child in _blocks.get_children():
+		_blocks.remove_child(child)
 
 	# list all files inside the package.
 	var dir = Directory.new()
@@ -80,14 +75,14 @@ func load_package(path):
 	dir.list_dir_end()
 
 	# place buttons.
-	_place_buttons(path + "/", levels, 1)
+	_place_buttons(path + "/", levels, "play")
 
 
-func load_next(what, path):
-	if what == 0:
-		_title.set_text(TITLE_LEVEL)
+func load_call(call, path):
+	if call == "levels":
 		load_package(path)
-	elif what == 1:
+
+	elif call == "play":
 		load_level(path)
 
 
